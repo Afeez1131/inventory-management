@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    {% load humanize %}
+
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+
+        tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 5px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+
+        ul {
+            list-style-type: none;
+        }
+
+
+        .text-center .company-name {
+            text-align: center;
+            font-size: 3em;
+            font-weight: bold;
+
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+            background-color: #eee;
+            font-weight: bold;
+            font-size: 2em;
+            padding: 10px;
+
+        }
+
+        .card {
+            width: 50%;
+            float: center;
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div id="printableArea">
+            <p style="color: #7e8d9f;"><strong> Invoice
+                    ID: {{invoice.invoice_id}}</strong></p>
+            <div class="col-xl-3 float-end">
+                <a onclick="printDiv('printableArea')" class="btn btn-sm  mb-1 text-white"
+                    style="background-color:#5e72e4;"><i class="fas fa-print text-white"></i> Print</a>
+
+                <a href="{% url 'pdf_download' invoice.invoice_id %}" class="btn btn-sm text-white"
+                    style="background-color:#5e72e4;"><i class="far fa-file-pdf text-white"></i> Export</a>
+                {% comment %} <br> {% endcomment %}
+                <a href="{% url 'pdf_download' invoice.invoice_id %}" class="btn btn-sm text-white"
+                    style="background-color:#5e72e4;"><i class="far fa-file-pdf text-white"></i> Send Mail</a>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <p class="company-name" style=" margin-bottom:0px; padding-bottom:0px;">Company Name</p>
+            <p class="url" style="margin-top:0px; padding-bottom:0px;">url: www.company.com</p>
+        </div>
+
+
+        <ul style="list-style: none;">
+            <li class="text-muted"><strong>Seller Name</strong>: {{seller_name}}</li>
+            <br>
+            <li class="text-muted"><strong>Customer Name</strong>: {{invoice.customer}}
+            </li>
+            <li class="text"><strong>E-mail</strong>: {{invoice.customer.email}}</li>
+            <li class="text"><strong>Phone Number:</strong> {{invoice.customer.phone_number}}</li>
+            </li>
+            <li class=""><strong>ID:</strong> {{invoice.invoice_id}}</li>
+            <li class=""><strong>Date:</strong> {{invoice.date}}</li>
+
+        </ul><br>
+        <table>
+            <thead>
+                <tr style="background-color:#eee;">
+                    <th>#</th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in invoice.sale.all %}
+                <tr>
+                    <td width="3%">{{forloop.counter}}</td>
+                    <td>{{sale.product}}</td>
+                    <td>{{sale.qty}}</td>
+                    <td>{{sale.product.price_per_one|intcomma}}</td>
+                    <td>{{sale.total_price|intcomma}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br><br>
+
+        <div class="right" style="font-size:2em;">Total: #{{invoice.total|intcomma}}</div>
+        <br>
+        <div class="row">
+
+            <div class="text-center">
+                <p>Thank you for your purchase</p>
+                Invoice Generated: {% now "SHORT_DATETIME_FORMAT" %}
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>

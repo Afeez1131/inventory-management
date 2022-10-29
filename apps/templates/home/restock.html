@@ -1,0 +1,135 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Edit Sale {% endblock title %}
+
+{% block content %}
+
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Sales</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit Sale</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+
+        <div class="col-xl-8 order-xl-1">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">Re-Stock product </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                        <strong>{{ message.tags }}</strong> {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <form method="POST">
+                        <h6 class="heading-small text-muted mb-4">Product Detail</h6>
+                        <div class="pl-lg-4">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-username">Product Name</label>
+                                        {{form.stock}}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-email">Unit</label>
+                                        {{form.unit}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-first-name">Quantity</label>
+                                        {{form.total_quantity}}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-first-name">Selling Price</label>
+                                        {{form.price_per_one}}
+                                    </div>
+                                </div>
+                                <!-- Description -->
+                                {% comment %} <h6 class="heading-small text-muted mb-4">Product Description</h6>
+                                {% endcomment %}
+
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Product Description</label>
+                                {{form.description}}
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <input type="submit" class="btn btn-primary my-4" value="Stock Product">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 order-xl-1">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">Recently Stocked </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row pl-lg-4">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" class="sort" data-sort="name">Product</th>
+                                        <th scope="col" class="sort" data-sort="budget">Remains</th>
+                       
+                                    </tr>
+                                </thead>
+                                {% for product in recent_product %}
+
+                                <tbody class="list">
+                                    <td>{{product}}</td>
+                                    <td>{{product.qty_remain}}
+                                </tbody>
+                                {% endfor %}
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+<input type="submit" value="Checkout">
+</form>

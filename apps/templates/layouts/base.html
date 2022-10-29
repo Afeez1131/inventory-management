@@ -1,0 +1,176 @@
+<!--
+=========================================================
+* Argon Dashboard - v1.2.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+
+
+* Copyright  Creative Tim (http://www.creative-tim.com)
+* Coded by www.creative-tim.com
+
+
+
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Farm Produce - {% block title %} Inventory Mangement {% endblock %} | Application
+  </title>
+
+  <!-- Favicon - loaded as static -->
+  <link rel="icon" href="/static/assets/img/brand/favicon.png" type="image/png">
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <!-- Icons -->
+  <link rel="stylesheet" href="/static/assets/vendor/nucleo/css/nucleo.css" type="text/css">
+  <link rel="stylesheet" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" type="text/css">
+  <!-- Page plugins -->
+  <!-- Argon CSS -->
+  <link rel="stylesheet" href="/static/assets/css/argon.css?v=1.2.0" type="text/css">
+  <!-- Specific CSS goes HERE -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
+  {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> {% endcomment %}
+
+
+
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+
+<body class="">
+
+  {% include "includes/sidenav.html" %}
+
+  <div class="main-content" id="panel">
+
+    {% include "includes/navigation.html" %}
+
+    {% block content %}{% endblock content %}
+
+  </div>
+
+  {% include "includes/scripts.html" %}
+  <script src="/static/assets/js/argon.js?v=1.2.0"></script>
+
+  <!-- Specific JS goes HERE -->
+  {% block javascripts %}
+
+<script>
+ 
+</script>
+<script>
+
+  $(document).ready(function () {
+    setInterval(function () {
+
+      $.ajax({
+        type: "GET",
+        url: "{% url 'product_ajax' %}",
+        success: function (response) {
+          {% comment %} console.log(response.products, response.sales); {% endcomment %}
+
+          $('#products').empty();
+          $('#seller-product-table').empty();
+          $('#sales-table').empty();
+          $('#product-table').empty();
+
+
+          for (var key in response.sales){
+            console.log(response)
+            console.log(response.sales[key]['timestamp'])
+            var product = response.sales[key]['product']
+            var buyer_name = response.sales[key]['buyer_name']
+            var seller_name = response.sales[key]['seller_name']
+            var total_price = response.sales[key]['total_price']
+            var payment_type = response.sales[key]['payment_type']
+            var unit = response.sales[key]['unit']
+            var qty = response.sales[key]['qty']
+            var timestamp = response.sales[key]['timestamp']
+
+            var temp = `<tr>
+              <th scope="row">
+                ${product} (${unit})
+              </th>
+              <th scope="row">
+                ${buyer_name}
+              </th>
+              <td>
+                ${seller_name}
+              </td>
+              <td>
+                ${qty}
+              </td>
+              <td>
+                ${payment_type}
+              </td>
+              <td>
+                ${timestamp}.
+              </td>
+              <td>
+                # ${total_price}
+              </td>
+            </tr>`
+
+            $('#sales-table').append(temp);
+          }
+
+          for (var key in response.products) {
+            var product_name = response.products[key]['product']
+            var qty_remain = response.products[key]['qty_remain']
+            var total_quantity = response.products[key]['total_quantity']
+            var qty_sold = response.products[key]['qty_sold']
+            var unit = response.products[key]['unit']
+
+            var temp = `<div class="col-xl-3 col-md-6">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="card-title text-uppercase text-muted mb-0">${product_name} </h5>
+                      <span class="h2 font-weight-bold mb-0">${total_quantity} ${unit}</span>
+                    </div>
+                    <div class="col-auto">
+                      <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                        <i class="ni ni-active-40"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 mb-0 text-sm">
+                    <span class="text-success mr-2"><i
+                        class=" text-warning fa fa-arrow-up"></i> ${qty_sold}</span>
+                    <span class="text-nowrap">Sold.</span>
+                    <span class="text-success mr-2"><i class="fa fa-arrow-down"></i> ${qty_remain}</span>
+                    <span class="text-nowrap">Remain in Stock</span>
+                  </p>
+                </div>
+              </div>
+            </div>`;
+
+            $('#products').append(temp);
+
+          }
+        },
+        error: function (response) {
+          alert("error occurred: " + response)
+        }
+      });
+    }, 5000);
+
+
+  });
+</script>
+
+
+{% endblock javascripts %}
+
+
+</body>
+
+</html>

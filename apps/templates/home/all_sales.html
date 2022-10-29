@@ -1,0 +1,147 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} All Sales {% endblock title %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Sales</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">All Sales</li>
+                        </ol>
+                    </nav>
+                </div>
+                {% comment %} <div class="col-lg-6 col-5 text-right">
+                    <a href="#" class="btn btn-sm btn-neutral">New</a>
+                    <a href="#" class="btn btn-sm btn-neutral">Filters</a>
+                </div> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header border-0">
+                    <h3 class="mb-0">All Sales for {{ today }}</h3>
+                </div>
+                <!-- Light table -->
+                <div class="table-responsive">
+                    <table class="table table-sm align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" class="sort" data-sort="name">Product</th>
+                                <th scope="col" class="sort" data-sort="budget">Buyer Name</th>
+                                <th scope="col" class="sort" data-sort="status">Seller Name</th>
+                                <th scope="col" class="sort" data-sort="status">QTY</th>
+                                <th scope="col">Date & Time</th>
+                                <th scope="col" class="sort" data-sort="completion">Amount</th>
+                                <th scope="col">Payment Type</th>
+                                <th scope="col"></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+
+                            {% for sale in page_obj %}
+                            <tr>
+                                <th scope="row">
+                                    <div class="media align-items-center">
+                                        <div class="media-body">
+                                            <span class="name mb-0 text-sm"><a href="{% url 'edit_sale' sale.id %}">
+                                               {{sale.product}}
+                                            </a></span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td class="budget">
+                                    {{sale.customer}}
+                                </td>
+                                <td class="budget">
+                                    {{sale.seller_name}}
+                                </td>
+                                <td class="budget">
+                                    {{sale.qty}}
+                                </td>
+                                <td class="budget">
+                                    {{sale.timestamp}}
+                                </td>
+                                <td class="budget">
+                                    # {{sale.total_price}}
+                                </td>
+                                <td>
+                                    <span class="badge badge-dot mr-4">
+                                        <i
+                                            class=" {%if sale.payment_type == 'Cash'%}bg-warning{%else%}bg-success {%endif%}"></i>
+                                        <span class="status">{{sale.payment_type}}</span>
+                                    </span>
+                                </td>
+                                <td><input type="checkbox" class="form-check-input" name="applicant"
+                                    value="{{ applicant.id }}" style="transform: scale(1.0);"></td>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                    <div class="card-footer py-4">
+                        <nav aria-label="Page navigation example">
+                            {% if is_paginated %}
+                            <ul class="pagination justify-content-end mb-0">
+                                {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{page_obj.previous_page_number}}">&laquo;</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">&laquo;</a>
+                                </li>
+                                {% endif %}
+                                {% for i in paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                <li class="page-item"><a class="page-link active">{{ i }}</a></li>
+                                {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a href="?page={{page_obj.next_page_number}}" class="page-link">&raquo;</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">&raquo;</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+                {% comment %} {} {% endcomment %}
+                <!-- Card footer -->
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('#move-accept').on('submit', function (e) {
+        if ($('input[class^="form-check-input"]:checked').length === 0) {
+            alert('Oops! You are yet to select Applicants.');
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

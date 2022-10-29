@@ -1,0 +1,69 @@
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+  <div class="scrollbar-inner">
+    <!-- Brand -->
+    <div class="sidenav-header  align-items-center">
+      
+        <img src="/static/assets/img/brand/blue.png" style="max-height:6rem;" class="navbar-brand-img" alt="Farm Produce Logo.">
+      </a>
+    </div>
+    <div class="navbar-inner">
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <!-- Nav items -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link {% if 'index' in segment %} active {% endif %}" href="/">
+              <i class="ni ni-tv-2 text-primary"></i>
+              <span class="nav-link-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'all_sales' in segment %} active {% endif %}" href="{% url 'all_sales' %}">
+              <i class="fa fa-store-alt text-orange"></i>
+              <span class="nav-link-text">Sales</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'all_product' in segment %} active {% endif %}" href="{% url 'all_product' %}">
+              <i class="fa fa-shopping-cart text-red"></i>
+              <span class="nav-link-text">Products</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'register_staff' in segment %} active {% endif %}" href="{% url 'register_staff' %}">
+              <i class="ni ni-single-02 text-green"></i>
+              <span class="nav-link-text">Create Staff</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'tables' in segment %} active {% endif %}" href="/tables.html">
+              <i class="ni ni-bullet-list-67 text-default"></i>
+              <span class="nav-link-text">Generate Invoice</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'restock' %}">
+              <i class="fas fa-box"></i>
+              <span class="nav-link-text">Re-Stock Product</span>
+            </a>
+          </li><hr class="my-3">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user_profile' %}">
+              <i class="ni ni-single-02 text-yellow"></i>
+              <span class="nav-link-text">Profile</span>
+            </a>
+          </li>  
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">
+              <i class="ni ni-user-run text-red"></i>
+              <span class="nav-link-text">Logout</span>
+            </a>
+          </li>            
+        </ul>
+        <!-- Divider -->
+        <hr class="my-3">
+        <!-- Heading -->
+      </div>
+    </div>
+  </div>
+</nav>

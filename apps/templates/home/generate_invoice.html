@@ -1,0 +1,151 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% comment %}
+<link rel="stylesheet" href="/static/assets/bootstrap-select/dist/css/bootstrap-select.css"> {% endcomment %}
+
+{% block title %} Invoice Page {% endblock title %}
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+
+    tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 5px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+{% block content %}
+{% comment %} {% include 'home/invoice.html' %} {% endcomment %}
+<div class="container mt--6">
+    < <div id="printableArea">
+        <div class="card" style="margin-top:100px;">
+            <div class="card-body">
+                <div class="container mb-5 mt-3">
+                    <div class="row d-flex align-items-baseline">
+                        <div class="col-xl-9">
+                            <p style="color: #7e8d9f;"><strong> Invoice
+                                    ID: {{invoice.invoice_id}}</strong></p>
+                        </div>
+                        <div class="col-xl-3 float-end">
+                            {% comment %} <a onclick="printDiv('printableArea')" class="btn btn-sm  mb-1 text-white"
+                                style="background-color:#5e72e4;"><i class="fas fa-print text-white"></i> Print</a>
+                            {% endcomment %}
+
+                            <a href="{% url 'pdf_download' invoice.invoice_id %}" class="btn btn-sm text-white"
+                                style="background-color:#5e72e4;"><i class="far fa-file-pdf text-white"></i>
+                                Print/Export</a>
+                                <form method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-sm text-white"
+                                    style="background-color:#5e72e4;"><i class="far fa-file-pdf text-white"></i> Send
+                                    Mail</button>
+                            </form>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <div class="container">
+                        <div class="col-md-12">
+                            <div class="text-center">
+                                <p class="text-uppercase mb-0 pt-0"
+                                    style="color:#5e72e4 ;font-weight:bold; font-size:3em;">Company Name</p>
+                                <p class="pt-0 mt-0">url: www.company.com</p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xl-12" style="padding-left:0px; margin-left:0px;">
+                                <ul style="list-style: none;">
+                                    <li><strong>Seller Name</strong>: {{seller_name}}</li>
+                                    <br>
+                                    <li><strong>Customer Name</strong>: {{invoice.customer}}
+                                    </li>
+                                    <li><strong>E-mail</strong>: {{invoice.customer.email}}</li>
+                                    <li><strong>Phone Number:</strong> {{invoice.customer.phone_number}}</li>
+                                    </li>
+                                    <li class=""><strong>ID:</strong> {{invoice.invoice_id}}</li>
+                                    <li class=""><strong>Date:</strong> {{invoice.date}}</li>
+
+                                </ul><br>
+                            </div>
+
+                        </div>
+
+                        <div class="row my-2 mx-1 justify-content-center mt-5">
+                            <table class="table">
+                                <thead>
+                                    <tr style="background-color:#eee;">
+                                        <th>#</th>
+                                        <th>Description</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sale in invoice.sale.all %}
+                                    <tr>
+                                        <td width="3%">{{forloop.counter}}</td>
+                                        <td>{{sale.product}}</td>
+                                        <td>{{sale.qty}}</td>
+                                        <td>{{sale.product.price_per_one|intcomma}}</td>
+                                        <td>{{sale.total_price|intcomma}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <br><br>
+                        </div>
+
+                        <h2 class="text-right" style="font-size:2em;">Total: #{{invoice.total|intcomma}}</h2>
+
+                        <hr>
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="text-center">
+                                    <p>Thank you for your purchase</p>
+                                    Invoice Generated: {% now "SHORT_DATETIME_FORMAT" %}
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        document.execCommand('print');
+
+        document.body.innerHTML = originalContents;
+    };
+</script>
+
+{% endblock %}

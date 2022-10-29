@@ -1,0 +1,244 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% comment %}
+<link rel="stylesheet" href="/static/assets/bootstrap-select/dist/css/bootstrap-select.css"> {% endcomment %}
+
+{% block title %} Sales Page {% endblock title %}
+<style>
+.btn .dropdown-menu{
+    display: block !important;
+    padding: 10px;
+}
+
+.selectpicker {
+    display: block !important;
+    padding: 10px;
+}
+</style>
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Sales</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Sale Page</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+
+        <div class="col-xl-7">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">Sale Page</h3>
+                        </div>
+                        <div class="col-4 text-right">
+                            <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                        <strong>{{ message.tags }}</strong> {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% if form.errors %}
+
+                            <!-- For each field in form -->
+                            {% for field in form %}
+                            <!-- For each error in field -->
+                            {% for error  in field.errors %}
+                            <!-- Output error text message only -->
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>{{error}}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endfor %}
+                            {% endfor %}
+
+                            {% endif %}
+                            <div id="output">
+                            </div>
+
+                    <form method="POST" id="form">
+                        <h6 class="heading-small text-muted mb-4">User information</h6>
+                        <div class="pl-lg-4">
+                            {% csrf_token %}
+                            {% comment %} {{form}} {% endcomment %}
+
+                            <!-- If form errors exists -->
+                            
+                            <p>{{form.product}}</p>
+                            {{form.product.errors}}
+                            <p>{{form.qty}}</p>
+                            {{form.qty.errors}}
+
+                            {% comment %} <select>
+                                <option value="Bank">Bank</option>
+                                <option value="CAsh">CAsh</option>
+                            </select> {% endcomment %}
+                        </div>
+                        <div class="text-center">
+                            <input type="submit" class="btn btn-primary my-4" value="Create Sale">
+                            <a href="{% url 'invoice_generator' invoice.invoice_id %}" type="submit" class="btn btn-primary my-4">Generate Invoice</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-5">
+            
+    <div class="row">
+            <div class="card">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">Recent Sales by Staff: {{request.user}}</h3>
+                        </div>
+                        <div class="col text-right">
+                            <a href="{% url 'all_sales_date' today %}" class="btn btn-sm btn-primary">See all</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <!-- Projects table -->
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Buyer name</th>
+                                <th scope="col">QTY</th>
+                                <th scope="col">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for sale in sales %}
+                            <tr>
+                                <th scope="row">
+                                    {{sale.product}}
+                                </th>
+                                <th scope="row">
+                                    {{sale.customer}}
+                                </th>
+                                <td>
+                                    {{sale.qty}} {{sale.product.unit}}
+                                </td>
+                                <td>
+                                    # {{sale.total_price}}
+                                </td>
+                                <td>
+                                    # {{sale.timestamp}}
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        {% endblock %}
+{% block script %}
+
+{% comment %} <script src="/static/assets/vendor/jquery/dist/jquery.min.js"></script> {% endcomment %}
+
+{% endblock script %}
+<div class="card">
+    <div class="card-header border-0">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="mb-0">Recent Sales</h3>
+            </div>
+            <div class="col text-right">
+                <a href="#!" class="btn btn-sm btn-primary">See all</a>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <!-- Projects table -->
+        <table id="seller-product-table" class="table align-items-left">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Sold</th>
+                    <th scope="col">Remains</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for product in products %}
+                {% if product.qty_remain < 5 %}
+                <tr style="background-color: red; color:white;">
+                    <th scope="row">
+                        {{product}}
+                    </th>
+                    <td>
+                        {{product.total_quantity}}
+                    </td>
+                    <td>
+                        {{product.get_quantity_sold}}
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="mr-2">{{product.qty_remain}}</span>
+                            <div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <th scope="row">
+                        {{product}}
+                    </th>
+                    <td>
+                        {{product.total_quantity}}
+                    </td>
+                    <td>
+                        {{product.get_quantity_sold}}
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="mr-2">{{product.qty_remain}}</span>
+                            <div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</div>
